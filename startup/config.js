@@ -5,10 +5,10 @@ module.exports = function () {
       "Environment variable vidly_jwtConfig not defined. Terminating"
     );
   }
-  if (!config.get("dbConfig")) {
+  /*if (!config.get("dbConfig")) {
     console.log("Testing");
     throw new Error(
       "Environment variable vidly_dbConnStr not defined. Terminating"
     );
-  }
+  }*/
 };
