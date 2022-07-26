@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const Joi = require("Joi");
+const joi = require("joi");
 
 const config = require("config");
 const jwt = require("jsonwebtoken");
@@ -38,17 +38,17 @@ userSchema.methods.generateAuthToken = function authToken() {
 const User = new mongoose.model("User", userSchema);
 
 // Schema required for registering a user
-const joiSchema = Joi.object({
-  username: Joi.string().min(5).max(10).required(),
-  password: Joi.string().min(5).max(255).required(),
-  email: Joi.string().min(15).required().email(),
-  isAdmin: Joi.boolean(),
+const joiSchema = joi.object({
+  username: joi.string().min(5).max(10).required(),
+  password: joi.string().min(5).max(255).required(),
+  email: joi.string().min(15).required().email(),
+  isAdmin: joi.boolean(),
 });
 
 // Schema required for login
-const joiSchemaLogin = Joi.object({
-  username: Joi.string().min(5).max(10).required(),
-  password: Joi.string().min(5).max(255).required(),
+const joiSchemaLogin = joi.object({
+  username: joi.string().min(5).max(10).required(),
+  password: joi.string().min(5).max(255).required(),
 });
 
 function validate(obj) {

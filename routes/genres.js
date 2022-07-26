@@ -7,14 +7,14 @@ const routeHandler = require("../middlewares/routeHandler");
 const authMiddleware = require("../middlewares/authentication");
 
 const mongoDBHandler = require("../mongoDB/mongoDBHandler");
-const Joi = require("joi");
+const joi = require("joi");
 const { mongo } = require("mongoose");
 
 // Defining requirements to match: we need the id with values between 1 to 1000 and its required field
 // Title should have minimum 3 characters and maximum 10 chracters. It should be a required field with string value
-const schema = Joi.object({
+const schema = joi.object({
   _id: String,
-  title: Joi.string().min(3).max(10).required(),
+  title: joi.string().min(3).max(10).required(),
 });
 
 // Method for validating a given Genre object.
