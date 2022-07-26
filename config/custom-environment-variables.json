@@ -1,4 +1,4 @@
 {
   "jwtConfig": "vidly_jwtConfig",
-  "dbConfig": "dbConnStr"
+  "dbConfig": "dbstring"
 }

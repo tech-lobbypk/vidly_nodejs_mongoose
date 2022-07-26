@@ -6,6 +6,7 @@ module.exports = function () {
     );
   }
   if (!config.get("dbConfig")) {
+    console.log("Testing");
     throw new Error(
       "Environment variable vidly_dbConnStr not defined. Terminating"
     );
