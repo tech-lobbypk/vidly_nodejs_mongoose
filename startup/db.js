@@ -1,9 +1,12 @@
 const mongoose = require("mongoose");
 module.exports = async function () {
-  await mongoose.connect("mongodb://localhost:27017/vidly", {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  });
+  await mongoose.connect(
+    "mongodb+srv://dbadmin:12345@cluster0.jbhnw.mongodb.net/?retryWrites=true&w=majority/vidly",
+    {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    }
+  );
   console.log("Successfully connected to the mongoDB..");
 };
 
