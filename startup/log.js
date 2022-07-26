@@ -1,4 +1,5 @@
 const winston = require("winston");
+const config = require("config");
 require("winston-mongodb");
 
 winston.exceptions.handle(
@@ -17,7 +18,7 @@ process.on("unhandledRejection", (ex) => {
 winston.add(new winston.transports.File({ filename: "logs/errors.log" }));
 winston.add(
   new winston.transports.MongoDB({
-    db: "mongodb://localhost:27017/vidly",
+    db: "mongodb+srv://dbadmin:12345@cluster0.jbhnw.mongodb.net/?retryWrites=true&w=majority",
     // There are 6 levels: error,warn, info, verbose, debug, silly. Setting level to "info" will log message till "info" which includes "error" and "warn"
     // Lower levels will be ignored while storing logs to the mongoDB
     level: "info",
