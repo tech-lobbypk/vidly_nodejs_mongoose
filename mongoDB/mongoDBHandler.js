@@ -45,7 +45,7 @@ const saveOne = async (obj, callback) => {
 const findOne = async (obj, callback) => {
   console.log("Inside findOne: " + obj._id);
   try {
-    const result = await Genre.findById(obj._id);
+    const result = await Genre.findById({ _id: obj._id });
     callback(result);
   } catch (ex) {
     callback(undefined, ex);
