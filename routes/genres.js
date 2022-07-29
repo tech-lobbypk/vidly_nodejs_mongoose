@@ -10,6 +10,8 @@ const mongoDBHandler = require("../mongoDB/mongoDBHandler");
 const joi = require("joi");
 const { mongo } = require("mongoose");
 
+const errorGenerator = require("../utility/errorGenerator");
+
 // Defining requirements to match: we need the id with values between 1 to 1000 and its required field
 // Title should have minimum 3 characters and maximum 10 chracters. It should be a required field with string value
 const schema = joi.object({
@@ -27,7 +29,9 @@ const validateSchema = async (updatedGenre, callback) => {
 router.get("/", (req, res, next) => {
   console.log("/all");
   mongoDBHandler.findAll(req.params, (result, exception) => {
-    return result ? res.send(result) : next(exception);
+    return result
+      ? res.send(result)
+      : next(errorGenerator(exception, 500, "Internal error"));
   });
 });
 
@@ -37,7 +41,9 @@ router.get("/:id", (req, res, next) => {
   if (!req.params.id) res.send("Specify the id of the required document ");
   else {
     mongoDBHandler.findOne({ _id: req.params.id }, (result, exception) => {
-      return result ? res.send(result) : next(exception);
+      return result
+        ? res.send(result)
+        : next(errorGenerator(exception, 500, "Internal error"));
     });
   }
 });
@@ -49,10 +55,12 @@ router.post("/add", authMiddleware, (req, res, next) => {
   console.log("/add endpoint called");
   validateSchema(req.body, (err) => {
     if (err) {
-      res.send("Invalid Object definition: " + err);
+      next(errorGenerator(err, 500, "Invalid Object definition: "));
     } else {
       mongoDBHandler.saveOne(req.body, (result, exception) => {
-        return result ? res.send(result) : next(exception);
+        return result
+          ? res.send(result)
+          : next(errorGenerator(exception, 500, "Internal error"));
       });
     }
   });
@@ -64,12 +72,13 @@ router.put("/update", authMiddleware, (req, res, next) => {
   console.log("/put endpoint called");
   validateSchema(req.body, (err) => {
     if (err) {
-      res.send("Invalid Object definition: " + err);
+      next(errorGenerator(err, 500, "Invalid Object definition: "));
     } else {
       mongoDBHandler.updateOne(req.body, (result, exception) => {
-        console.log("sdfdfdf");
         console.log(result);
-        return result ? res.send(result) : next(exception);
+        return result
+          ? res.send(result)
+          : next(errorGenerator(exception, 500, "Internal error"));
       });
     }
   });
@@ -78,12 +87,14 @@ router.put("/update", authMiddleware, (req, res, next) => {
 //Endpoint for deleting a genre against the given id
 // Only the authorized Admins should be able to delete the genre
 // authMiddleware and admin are making sure the authorizationa and authentication
-router.delete("/delete", [authMiddleware, admin], (req, res) => {
+router.delete("/delete", [authMiddleware, admin], (req, res, next) => {
   console.log("/delete endpoint called");
-  if (!req.body._id) res.send("_id cannot be undefined");
+  if (!req.body._id) next(errorGenerator(err, 500, "_id cannot be undefined"));
   else
     mongoDBHandler.deleteOne(req.body, (result, exception) => {
-      return result ? res.send(result) : next(exception);
+      return result
+        ? res.send(result)
+        : next(errorGenerator(exception, 500, "Internal error"));
     });
 });
 
