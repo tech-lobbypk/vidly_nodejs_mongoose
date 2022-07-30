@@ -14,7 +14,7 @@ require("./startup/prod")(app);
 app.use(error);
 
 const PORT = process.env.PORT || 3000;
-app.listen("0.0.0.0" + PORT, (err) => {
+app.listen(PORT, (err) => {
   if (!err) debug(`Server started on port ${PORT}`);
   else throw err;
 });
