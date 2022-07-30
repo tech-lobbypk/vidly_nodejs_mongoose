@@ -4,6 +4,6 @@ const { usersRouter } = require("../routes/users");
 
 module.exports = function (app) {
   app.use(express.json());
-  app.use("/genres", genresRouter);
+  app.use("/", genresRouter);
   app.use("/users", usersRouter);
 };

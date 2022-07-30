@@ -36,7 +36,7 @@ router.get("/", (req, res, next) => {
 });
 
 // Endpoint for getting a specific Genre
-router.get("/:id", (req, res, next) => {
+router.get("/genres/:id", (req, res, next) => {
   console.log("Inside get/:id00000----");
   if (!req.params.id) res.send("Specify the id of the required document ");
   else {
@@ -51,7 +51,7 @@ router.get("/:id", (req, res, next) => {
 // Endpoint for adding a new genre after validating it against the scheme defined above
 // Only the authentic users should be able to add a new genre
 // authMiddlware checks the authorization
-router.post("/add", authMiddleware, (req, res, next) => {
+router.post("/genres/add", authMiddleware, (req, res, next) => {
   console.log("/add endpoint called");
   validateSchema(req.body, (err) => {
     if (err) {
@@ -68,7 +68,7 @@ router.post("/add", authMiddleware, (req, res, next) => {
 
 // Endpoint for updating an existing Genre against the given id. The updated values are found in the body of the request object
 // Only the authentic users should be able to update a genre
-router.put("/update", authMiddleware, (req, res, next) => {
+router.put("/genres/update", authMiddleware, (req, res, next) => {
   console.log("/put endpoint called");
   validateSchema(req.body, (err) => {
     if (err) {
@@ -87,7 +87,7 @@ router.put("/update", authMiddleware, (req, res, next) => {
 //Endpoint for deleting a genre against the given id
 // Only the authorized Admins should be able to delete the genre
 // authMiddleware and admin are making sure the authorizationa and authentication
-router.delete("/delete", [authMiddleware, admin], (req, res, next) => {
+router.delete("/genres/delete", [authMiddleware, admin], (req, res, next) => {
   console.log("/delete endpoint called");
   if (!req.body._id) next(errorGenerator(err, 500, "_id cannot be undefined"));
   else
