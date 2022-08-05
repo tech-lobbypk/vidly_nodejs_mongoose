@@ -1,16 +1,9 @@
 const mongoose = require("mongoose");
 mongoose.set("debug", true);
 
-// Definign schema for the mongoDB document
-// title should be string and is required
-const genreSchema = new mongoose.Schema(
-  {
-    title: { type: String, required: true },
-  },
-  { strict: false }
-);
+const { genreDBSchema } = require("../models/genre");
 
-const Genre = mongoose.model("Genre", genreSchema);
+const Genre = mongoose.model("Genre", genreDBSchema);
 
 //The following method initializes the database to 3 documents
 const initializeDatabase = async (callback) => {
@@ -53,7 +46,7 @@ const findOne = async (obj, callback) => {
 };
 
 // Method to retrive all records from the database
-const findAll = async (obj, callback) => {
+const findAll = async (callback) => {
   console.log("Inside findAll: ");
   try {
     const result = await Genre.find().sort({ _id: 1 });
@@ -77,7 +70,6 @@ const updateOne = async (obj, callback) => {
       { upsert: true, strict: false, new: true } // returns the updated object
     );
     console.log(updatedObj);
-    console.log("0990090909090909");
     callback(updatedObj);
   } catch (ex) {
     console.log(ex);

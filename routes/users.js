@@ -6,17 +6,23 @@ const _ = require("lodash");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const authMiddleware = require("../middlewares/authentication");
+require("express-async-errors");
+const errorGenerator = require("../utility/errorGenerator");
+const admin = require("../middlewares/admin");
 
 router.post("/register", async (req, res, next) => {
+  console.log("Inside /register");
+  console.log(req.body);
   const result = validate(req.body);
+  console.log(result);
   if (result.error) {
-    console.log("Error: " + result.error);
-    next(errorGenerator(exception, 400, result.error.details[0].message));
+    console.log("Error: " + result);
+    next(errorGenerator(result.error, 400, result.error.details[0].message));
   } else {
     console.log("valid object");
     try {
       const newUser = new User(
-        _.pick(req.body, ["username", "password", "email", "isAdmin"])
+        _.pick(req.body, ["username", "password", "email", "isAdmin", "phone"])
       );
       const salt = await bcrypt.genSalt(10);
       console.log(salt);
@@ -32,13 +38,26 @@ router.post("/register", async (req, res, next) => {
   }
 });
 
-router.post("/login", async (req, res) => {
+router.post("/login", async (req, res, next) => {
+  console.log("Inside login");
   const validationResult = validateLogin(req.body);
   if (validationResult.error)
-    next(errorGenerator(exception, 400, result.error.details[0].message));
+    next(
+      errorGenerator(
+        validationResult.error,
+        400,
+        validationResult.error.details[0].message
+      )
+    );
   const result = await User.findOne({ username: req.body.username });
   if (!result)
-    return next(errorGenerator(exception, 400, "Invalid username or password"));
+    return next(
+      errorGenerator(
+        "Invalid Username or password",
+        400,
+        "Invalid username or password"
+      )
+    );
   try {
     const compResult = await bcrypt.compare(req.body.password, result.password);
     if (compResult) {
@@ -51,7 +70,17 @@ router.post("/login", async (req, res) => {
     }
     next(errorGenerator(exception, 400, "Invalid username or password"));
   } catch (exception) {
-    next(errorGenerator(exception, 500, "Internal Error ... try again"));
+    return next(errorGenerator(exception, 500, "Internal Error ... try again"));
+  }
+});
+
+router.get("/", [authMiddleware, admin], async (req, res, next) => {
+  try {
+    res.send(await User.find().sort({ username: 1 }));
+  } catch (ex) {
+    return next(
+      errorGenerator(exception, 500, "Internal Error ... Could not fetch users")
+    );
   }
 });
 

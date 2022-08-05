@@ -11,6 +11,7 @@ const userSchema = new mongoose.Schema({
     required: true,
     minLenght: 5,
     maxLength: 10,
+    unique: true,
   },
   password: {
     type: String,
@@ -24,7 +25,13 @@ const userSchema = new mongoose.Schema({
     minLenght: 15,
     unique: true,
   },
-  isAdmin: Boolean,
+  isAdmin: { type: Boolean, default: false },
+  phone: {
+    type: String,
+    required: true,
+    minLength: 8,
+    maxLength: 20,
+  },
 });
 // Method used to generate authentication token using username and isAdmin property
 userSchema.methods.generateAuthToken = function authToken() {
@@ -43,6 +50,7 @@ const joiSchema = joi.object({
   password: joi.string().min(5).max(255).required(),
   email: joi.string().min(15).required().email(),
   isAdmin: joi.boolean(),
+  phone: joi.string().min(8).max(20).required(),
 });
 
 // Schema required for login
