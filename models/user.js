@@ -2,8 +2,11 @@ const mongoose = require("mongoose");
 const joi = require("joi");
 
 const config = require("config");
+
+const _ = require("lodash");
+const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const { join } = require("lodash");
+const errorGenerator = require("../utility/errorGenerator");
 
 const userSchema = new mongoose.Schema({
   username: {
@@ -66,6 +69,85 @@ function validate(obj) {
 function validateLogin(obj) {
   return joiSchemaLogin.validate(obj);
 }
-module.exports.User = User;
-module.exports.validate = validate;
-module.exports.validateLogin = validateLogin;
+
+const findAllUsers = async (req, next) => {
+  const result = await User.find().sort({ username: 1 });
+  return result
+    ? result
+    : next(
+        errorGenerator(
+          "Could not fetch all users",
+          500,
+          "Internal Error: Could not fetch all users"
+        )
+      );
+};
+const extractUser = async (req, next) => {
+  const result = await User.findOne({ username: req.body.username });
+
+  return result
+    ? result
+    : next(
+        errorGenerator(
+          "Invalid Username or password",
+          400,
+          "Invalid username or password"
+        )
+      );
+};
+
+const validateUser = async (req, res, next, user) => {
+  const compResult = await bcrypt.compare(req.body.password, user.password);
+
+  if (compResult) {
+    // set environment variable jwtConfig to a key to run the app
+    // export jwtConfig=/* some value */
+    return res
+      .status(200)
+      .header("x-auth-token", user.generateAuthToken())
+      .send("Login Successful");
+  }
+  return next(
+    errorGenerator(
+      "Invalid username or password",
+      400,
+      "Invalid username or password"
+    )
+  );
+};
+
+const createUser = async (req, res, next) => {
+  try {
+    const newUser = new User(
+      _.pick(req.body, ["username", "password", "email", "isAdmin", "phone"])
+    );
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(newUser.password, salt);
+    newUser.password = hashedPassword;
+    await newUser.save();
+    res
+      .header("x-auth-token", newUser.generateAuthToken())
+      .send(_.pick(newUser, ["username", "email"]));
+  } catch (exception) {
+    if (exception.code == 11000)
+      return next(
+        errorGenerator(
+          exception,
+          400,
+          `${Object.keys(exception.keyValue)[0]} already taken`
+        )
+      );
+    else
+      return next(errorGenerator(exception, 400, "Internal error: Try again"));
+  }
+};
+
+module.exports = {
+  User,
+  validate,
+  validateLogin,
+  createUser,
+  validateUser,
+  extractUser,
+  findAllUsers,
+};

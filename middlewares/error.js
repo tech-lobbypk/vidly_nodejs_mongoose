@@ -5,4 +5,5 @@ module.exports = function (err, req, res, next) {
   console.log("Exception Caught");
   winston.error("Internal error: " + err.message, err);
   res.status(err.code).send(err.message);
+  //next();
 };

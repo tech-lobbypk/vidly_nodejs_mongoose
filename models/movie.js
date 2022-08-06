@@ -9,6 +9,7 @@ const movieDBSchema = new mongoose.Schema({
     required: true,
     minLenght: 5,
     maxLength: 50,
+    unique: true,
   },
   dailyRent: {
     type: Number,
