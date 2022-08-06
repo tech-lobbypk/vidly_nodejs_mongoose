@@ -22,5 +22,8 @@ winston.add(
     // There are 6 levels: error,warn, info, verbose, debug, silly. Setting level to "info" will log message till "info" which includes "error" and "warn"
     // Lower levels will be ignored while storing logs to the mongoDB
     level: "info",
+    options: {
+      useUnifiedTopology: true,
+    },
   })
 );
