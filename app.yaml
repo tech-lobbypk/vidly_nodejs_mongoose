@@ -1,4 +1,4 @@
 runtime: nodejs16
 env_variables:
   vidly_jwtConfig: "12345"
-  vidly_dbConnStr: "mongodb+srv://dbadmin:12345@cluster0.jbhnw.mongodb.net/?retryWrites=true&w=majority"
+  dbConnString: "mongodb+srv://dbadmin:12345@cluster0.jbhnw.mongodb.net/?retryWrites=true&w=majority"
