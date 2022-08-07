@@ -16,10 +16,10 @@ const validateMovieObj = (req, next) => {
   const result = validateMovieSchema(req.body);
   if (result.error) {
     console.log("joi validation failed");
-    return next(
-      errorGenerator(result.error, 400, result.error.details[0].message)
-    );
+    next(errorGenerator(result.error, 400, result.error.details[0].message));
+    return false;
   }
+  return true;
 };
 
 function extractGenre(req, next) {
@@ -45,14 +45,14 @@ function extractGenre(req, next) {
 }
 
 router.post("/add", authMiddleware, async (req, res, next) => {
-  validateMovieObj(req, next);
-  extractGenre(req, next).then((objGenre) => {
-    console.log("In then ----------");
-    let objMovie = _.pick(req.body, ["name", "dailyRent", "stock"]);
-    objMovie.genre = _.pick(objGenre, ["_id", "title"]);
-    saveMovie(objMovie, res, next);
-  });
-  console.log("Out of then--------");
+  if (validateMovieObj(req, next)) {
+    extractGenre(req, next).then((objGenre) => {
+      console.log("In then ----------");
+      let objMovie = _.pick(req.body, ["name", "dailyRent", "stock"]);
+      objMovie.genre = _.pick(objGenre, ["_id", "title"]);
+      saveMovie(objMovie, res, next);
+    });
+  }
 });
 
 function saveMovie(objMovie, res, next) {
@@ -99,11 +99,12 @@ router.get("/:id", async (req, res, next) => {
 
 router.put("/update", authMiddleware, (req, res, next) => {
   console.log("Movies /put endpoint called");
-  validateMovieObj(req, next);
-  extractGenre(req, next).then((objGenre) => {
-    req.body.genre = objGenre;
-    updateMovie(req, res, next);
-  });
+  if (validateMovieObj(req, next)) {
+    extractGenre(req, next).then((objGenre) => {
+      req.body.genre = objGenre;
+      updateMovie(req, res, next);
+    });
+  }
 });
 
 function updateMovie(req, res, next) {

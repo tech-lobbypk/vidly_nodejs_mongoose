@@ -24,7 +24,7 @@ router.post("/rentOut", async (req, res, next) => {
   } else {
     extractMovie(req.body._id_movie, next).then((movieObj) => {
       console.log("movie extracted" + movieObj);
-      extractUser(req.body._id_user).then((userObj) => {
+      extractUser(req.body._id_user, next).then((userObj) => {
         saveRental(movieObj, userObj, res, next);
       });
     });
@@ -96,7 +96,7 @@ const extractMovie = async (movieID, next) => {
   });
 };
 
-const extractUser = (userID) => {
+const extractUser = (userID, next) => {
   return new Promise(async (resolve, reject) => {
     try {
       const result = await User.findById(
@@ -104,7 +104,7 @@ const extractUser = (userID) => {
         { username: 1, phone: 1 }
       );
       resolve(result);
-    } catch (ex) {
+    } catch (exception) {
       return next(
         errorGenerator(
           exception,
