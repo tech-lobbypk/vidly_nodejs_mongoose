@@ -6,11 +6,11 @@ Movie Rental RESTful API is developed in Node.js using express and mongoose fram
 
 The API is deployed to three platforms including Heroku, AWS and GCP.
 
-1. [Heroku](https://nodejs-mongoose-demo.herokuapp.com)
+1. [Heroku](https://nodejs-mongoose-demo.herokuapp.com.movies)
 
-2. [AWS](http://ec2-52-90-154-241.compute-1.amazonaws.com:3000/)
+2. [AWS](http://ec2-52-90-154-241.compute-1.amazonaws.com:3000/movies)
 
-3. [GCP](https://nodejs-mongodb-demo.el.r.appspot.com/)
+3. [GCP](https://nodejs-mongodb-demo.el.r.appspot.com/movies)
 
 Find API operations and details in the sections below. 
 
